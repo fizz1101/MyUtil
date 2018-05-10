@@ -1,0 +1,8 @@
+#Idea
+
+.idea
+MyUtil.iml
+
+# sbteclipse plugin
+target
+classes
