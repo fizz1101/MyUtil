@@ -5,4 +5,5 @@ MyUtil.iml
 
 # sbteclipse plugin
 target
-classes
+out
+META-INF
