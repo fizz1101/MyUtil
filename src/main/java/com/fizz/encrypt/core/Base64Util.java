@@ -303,12 +303,12 @@ public class Base64Util {
 
     /**
      * 功能：解码字符串(apache)
-     * @param strMing 源字符串
+     * @param strMi 源字符串
      * @return String
      */
-    public static String decodeByApache(String strMing) {
+    public static String decodeByApache(String strMi) {
         org.apache.commons.codec.binary.Base64 base64 = new org.apache.commons.codec.binary.Base64();
-        byte[] b = strMing.getBytes();
+        byte[] b = strMi.getBytes();
         byte[] byteMi = base64.decode(b);
         try {
             return new String(byteMi, "UTF-8");
@@ -319,41 +319,79 @@ public class Base64Util {
     }
 
 
-    /**JDK1.8*/
+    /**JDK1.7-*/
+    /**
+     * 功能：编码字符串(JDK1.7-)
+     * @param strMing  源字符串
+     * @return String
+     */
+    public static String encodeByJDK7(String strMing) {
+        sun.misc.BASE64Encoder encoder = new sun.misc.BASE64Encoder();
+        return encoder.encode(strMing.getBytes());
+    }
 
     /**
-     * 功能：编码字符串(JDK1.8)
+     * 功能：解码字符串(JDK1.7-)
+     * @param strMi 源字符串
+     * @return String
+     */
+    public static String decodeByJDK7(String strMi) {
+        sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();
+        try {
+            return new String(decoder.decodeBuffer(strMi));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /**JDK1.8+*/
+
+    /**
+     * 功能：编码字符串(JDK1.8+)
+     * @param strMing  源字符串
+     * @return String
+     */
+    /*public static String encodeByJDK8(String strMing) {
+        return encodeByJDK8(strMing.getBytes());
+    }*/
+
+    /**
+     * 功能：编码字符串(JDK1.8+)
      * @param byteMing  源字符数组
      * @return String
      */
-    /*public static String encodeByJDK(byte[] byteMing) {
-        Base64.Encoder encoder = Base64.getEncoder();
+    /*public static String encodeByJDK8(byte[] byteMing) {
+        java.util.Base64.Encoder encoder = java.util.Base64.getEncoder();
         return encoder.encodeToString(byteMing);
     }*/
 
     /**
-     * 功能：解码字符串(JDK1.8)
-     * @param byteMi 源字符数组
+     * 功能：解码字符串(JDK1.8+)
+     * @param strMi 源字符串
      * @return String
      */
-    /*public static String decodeByJDK(byte[] byteMi) {
-        Base64.Decoder decoder = Base64.getDecoder();
-        byte[] byteMing = decoder.decode(byteMi);
-        try {
-            return new String(byteMing, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return null;
+    /*public static String decodeByJDK8(String strMi) {
+        return decodeByJDK8(strMi.getBytes());
     }*/
 
     /**
-     * 功能：解码字符串(JDK1.8)
+     * 功能：解码字符串(JDK1.8+)
      * @param byteMi 源字符数组
      * @return String
      */
-    /*public static byte[] decodeByJDK2(byte[] byteMi) {
-        Base64.Decoder decoder = Base64.getDecoder();
+    /*public static String decodeByJDK8(byte[] byteMi) {
+        return new String(decodeByJDK8ToByte(byteMi));
+    }*/
+
+    /**
+     * 功能：解码字符串(JDK1.8+)
+     * @param byteMi 源字符数组
+     * @return byte[]
+     */
+    /*public static byte[] decodeByJDK8ToByte(byte[] byteMi) {
+        java.util.Base64.Decoder decoder = java.util.Base64.getDecoder();
         return decoder.decode(byteMi);
     }*/
 

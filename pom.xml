@@ -4,11 +4,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com</groupId>
-  <artifactId>fizz</artifactId>
+  <groupId>com.fizz</groupId>
+  <artifactId>MyUtil</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>fizz</name>
+  <packaging>jar</packaging>
+  <name>MyUtil</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -31,13 +32,6 @@
       <artifactId>commons-codec</artifactId>
       <version>1.10</version>
     </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -52,6 +46,32 @@
             <target>1.7</target>
           </configuration>
         </plugin>
+        <!-- 项目打包jar时，包含引入jar -->
+        <!--<plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <configuration>
+            <appendAssemblyId>false</appendAssemblyId>
+            <descriptorRefs>
+              <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
+            <archive>
+              <manifest>
+                <addClasspath>true</addClasspath>
+                <classpathPrefix>lib/</classpathPrefix>
+                <mainClass>com.fizz.encrypt.EncryptTest</mainClass>
+              </manifest>
+            </archive>
+          </configuration>
+          <executions>
+            <execution>
+              <id>make-assembly</id>
+              <phase>package</phase>
+              <goals>
+                <goal>assembly</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>-->
       </plugins>
       <!--<plugins>
         <plugin>
