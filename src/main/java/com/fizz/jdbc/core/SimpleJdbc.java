@@ -13,14 +13,6 @@ public class SimpleJdbc implements JdbcOperation {
 
     private DataSource dataSource;
 
-    public DataSource getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
     public SimpleJdbc() {
         if (this.dataSource == null) {
             this.dataSource = new SimpleDataSource();
@@ -29,22 +21,6 @@ public class SimpleJdbc implements JdbcOperation {
 
     public SimpleJdbc(DataSource dataSource) {
         this.dataSource = dataSource;
-    }
-
-    public Connection getConnection() {
-        return getConnection(AUTO_COMMIT);
-    }
-
-    public Connection getConnection(boolean autoCommit) {
-        try {
-            Connection conn = dataSource.getConnection();
-            if (!autoCommit)
-                conn.setAutoCommit(autoCommit);
-            return conn;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public int sava(String sql, Object[] values) {
@@ -218,18 +194,18 @@ public class SimpleJdbc implements JdbcOperation {
         return queryForEntity(sql, new Object[] {}, clazz);
     }
 
-    public List<?> queryForEntityBatch(String sql, Object[] params, int curPage, int pageSize, Class<?> clazz) throws SQLException {
+    public List<?> queryForEntityPage(String sql, Object[] params, int curPage, int pageSize, Class<?> clazz) throws SQLException {
         Connection conn = getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
         List<Object> list = null;
         try {
-            list = new ArrayList<Object>();
+            list = new ArrayList<>();
             int start = (curPage-1) * pageSize;
             int last = curPage * pageSize;
-            stmt = createPreparedStatementBatch(conn, sql, params, last);
+            stmt = createPreparedStatementPage(conn, sql, params, last);
             rs = stmt.executeQuery();
-            rs.relative(start);
+            rs.absolute(start);
             while (rs.next()) {
                 list.add(RowEntity.transToEntity(rs, clazz));
             }
@@ -243,11 +219,11 @@ public class SimpleJdbc implements JdbcOperation {
         return list;
     }
 
-    public List<?> queryForEntityBatch(String sql, int curPage, int pageSize, Class<?> clazz) throws SQLException {
-        return queryForEntityBatch(sql, new Object[] {}, curPage, pageSize, clazz);
+    public List<?> queryForEntityPage(String sql, int curPage, int pageSize, Class<?> clazz) throws SQLException {
+        return queryForEntityPage(sql, new Object[] {}, curPage, pageSize, clazz);
     }
 
-    public List<?> queryForBean(String sql, Object[] params, RowMapper<?> mapper) throws SQLException {
+    public List<?> queryForMapper(String sql, Object[] params, RowMapper<?> mapper) throws SQLException {
         Connection conn = getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -269,8 +245,8 @@ public class SimpleJdbc implements JdbcOperation {
         return list;
     }
 
-    public List<?> queryForBean(String sql, RowMapper<?> mapper) throws SQLException {
-        return queryForBean(sql, new Object[] {}, mapper);
+    public List<?> queryForMapper(String sql, RowMapper<?> mapper) throws SQLException {
+        return queryForMapper(sql, new Object[] {}, mapper);
     }
 
     public List<Map<String, Object>> queryForMap(String sql, Object[] params) throws SQLException {
@@ -309,29 +285,45 @@ public class SimpleJdbc implements JdbcOperation {
         return queryForMap(sql, new Object[] {});
     }
 
-    protected PreparedStatement createPreparedStatement(Connection conn, String sql, Object[] params) throws SQLException {
+    private Connection getConnection() {
+        return getConnection(AUTO_COMMIT);
+    }
+
+    private Connection getConnection(boolean autoCommit) {
+        try {
+            Connection conn = dataSource.getConnection();
+            if (!autoCommit)
+                conn.setAutoCommit(autoCommit);
+            return conn;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private PreparedStatement createPreparedStatement(Connection conn, String sql, Object[] params) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setQueryTimeout(JdbcConf.queryTimeout);
         for (int i = 0; i < params.length; i++)
             stmt.setObject(i + 1, params[i]);
         return stmt;
     }
 
-    protected PreparedStatement createPreparedStatementPrimaryKey(Connection conn, String sql, Object[] params) throws SQLException {
+    private PreparedStatement createPreparedStatementPrimaryKey(Connection conn, String sql, Object[] params) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        stmt.setQueryTimeout(JdbcConf.queryTimeout);
         for (int i = 0; i < params.length; i++)
             stmt.setObject(i + 1, params[i]);
         return stmt;
     }
 
-    protected PreparedStatement createPreparedStatementBatch(Connection conn, String sql, Object[] params, int size) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        for (int i = 0; i < params.length; i++)
-            stmt.setObject(i + 1, params[i]);
+    private PreparedStatement createPreparedStatementPage(Connection conn, String sql, Object[] params, int size) throws SQLException {
+        PreparedStatement stmt = createPreparedStatement(conn, sql, params);
         stmt.setMaxRows(size);
         return stmt;
     }
 
-    public void free(Connection x) {
+    private void free(Connection x) {
         if (x != null)
             try {
                 x.close();
@@ -340,7 +332,7 @@ public class SimpleJdbc implements JdbcOperation {
             }
     }
 
-    public void free(Statement x) {
+    private void free(Statement x) {
         if (x != null)
             try {
                 x.close();
@@ -349,7 +341,7 @@ public class SimpleJdbc implements JdbcOperation {
             }
     }
 
-    public void free(PreparedStatement x) {
+    private void free(PreparedStatement x) {
         if (x != null)
             try {
                 x.close();
@@ -358,7 +350,7 @@ public class SimpleJdbc implements JdbcOperation {
             }
     }
 
-    public void free(ResultSet x) {
+    private void free(ResultSet x) {
         if (x != null)
             try {
                 x.close();

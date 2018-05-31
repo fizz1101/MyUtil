@@ -295,18 +295,18 @@ public class Base64Util {
      * @param strMing 源字符串
      * @return
      */
-    public static String encodeByApache(String strMing) {
+    /*public static String encodeByApache(String strMing) {
         org.apache.commons.codec.binary.Base64 base64 = new org.apache.commons.codec.binary.Base64();
         byte[] b = strMing.getBytes();
         return base64.encodeToString(b);
-    }
+    }*/
 
     /**
      * 功能：解码字符串(apache)
      * @param strMi 源字符串
      * @return String
      */
-    public static String decodeByApache(String strMi) {
+    /*public static String decodeByApache(String strMi) {
         org.apache.commons.codec.binary.Base64 base64 = new org.apache.commons.codec.binary.Base64();
         byte[] b = strMi.getBytes();
         byte[] byteMi = base64.decode(b);
@@ -316,7 +316,7 @@ public class Base64Util {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
 
     /**JDK1.7-*/

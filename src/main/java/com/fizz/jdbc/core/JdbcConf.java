@@ -12,6 +12,7 @@ public class JdbcConf {
     static String  password = "";
     static int poolSize = 10;   //初始化连接数
     static int batchSize = 100; //批量操作数量
+    static int queryTimeout = 60;   //查询超时时间
     static boolean initStatus = false;
 
     public static void init(InputStream in) {
@@ -24,6 +25,7 @@ public class JdbcConf {
             password = prop.getProperty("mysql.password", "123456");
             poolSize = Integer.parseInt(prop.getProperty("jdbc.pool.size", "5"));
             batchSize = Integer.parseInt(prop.getProperty("jdbc.batch.size", "100"));
+            queryTimeout = Integer.parseInt(prop.getProperty("jdbc.query.timeout", "60"));
             initStatus = true;
         } catch (IOException e) {
             e.printStackTrace();

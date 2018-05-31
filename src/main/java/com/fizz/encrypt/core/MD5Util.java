@@ -83,7 +83,7 @@ public class MD5Util {
     }
 
     /**
-     * 将字节数组转换成十六进制字符串
+     * 将字节数组转换成十六进制字符串(位运算符法)
      * @param byteMi    密文数组
      * @return
      */
@@ -96,6 +96,39 @@ public class MD5Util {
             buf.append(HEX_CHAR[b & 0xf]);
         }
         return buf.toString();
+    }
+
+    /**
+     * 将字节数组转换成十六进制字符串(通过算法)
+     * @param bytes 字节数组
+     * @return
+     */
+    private static String byte2Hex(byte[] bytes) {
+        StringBuffer sb = new StringBuffer();
+        int len = bytes.length;
+        for (int offset=0; offset<len; offset++) {
+            int iRet = bytes[offset];
+            if (iRet < 0) {
+                iRet += 256;
+            }
+            int high = iRet/16;
+            int low = iRet%16;
+            sb.append(HEX_CHAR[high] + "" + HEX_CHAR[low]);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 将字节数组转换成十六进制字符串(格式化法)
+     * @param bytes 字节数组
+     * @return
+     */
+    private static String byte2HexOther(byte[] bytes) {
+        StringBuffer sb = new StringBuffer();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 
     public static void main(String[] args) {

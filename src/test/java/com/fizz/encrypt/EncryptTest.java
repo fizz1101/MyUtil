@@ -10,7 +10,7 @@ public class EncryptTest {
         String strMing = "fizz";
         String primaryKey = "921101";
         System.out.println("Base64加密：" + Base64Util.encode(strMing));
-        System.out.println("Base64加密：" + Base64Util.encodeByApache(strMing));
+//        System.out.println("Base64加密：" + Base64Util.encodeByApache(strMing));
         System.out.println("DES加密：" + DESUtil.encrypt(strMing, primaryKey));
         System.out.println("MD5加密：" + MD5Util.get32MD5(strMing));
     }

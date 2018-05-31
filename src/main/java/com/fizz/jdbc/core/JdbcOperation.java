@@ -8,42 +8,51 @@ import java.util.Map;
 public interface JdbcOperation {
 
     /**
-     * update或delete功能
+     * save功能
+     * @param sql
+     * @param values
+     * @return  自增主键id
+     * @throws SQLException
+     */
+    int sava(String sql, Object[] values) throws SQLException;
+
+    /**
+     * save或update或delete功能
+     *
+     * @param sql
+     * @param params
+     * @return
+     * @throws SQLException
+     */
+    boolean execute(String sql, Object[] params) throws SQLException;
+
+    /**
+     * save或update或delete功能
+     *
+     * @param sql
+     * @return
+     * @throws SQLException
+     */
+    boolean execute(String sql) throws SQLException;
+
+    /**
+     * 批处理save或update或delete功能
      *
      * @param sql
      * @param params
      * @return 变更记录数
      * @throws SQLException
      */
-    public abstract boolean execute(String sql, Object[] params) throws SQLException;
+    int executeBatch(String sql, List<Object[]> params) throws SQLException;
 
     /**
-     * update或delete功能
+     * 批处理save或update或delete功能
      *
      * @param sql
      * @return 变更记录数
      * @throws SQLException
      */
-    public abstract boolean execute(String sql) throws SQLException;
-
-    /**
-     * 批处理update或delete功能
-     *
-     * @param sql
-     * @param params
-     * @return 变更记录数
-     * @throws SQLException
-     */
-    public abstract int executeBatch(String sql, List<Object[]> params) throws SQLException;
-
-    /**
-     * 批处理update或delete功能
-     *
-     * @param sql
-     * @return 变更记录数
-     * @throws SQLException
-     */
-    public abstract int executeBatch(String sql) throws SQLException;
+    int executeBatch(String sql) throws SQLException;
 
     /**
      * select功能
@@ -53,7 +62,7 @@ public interface JdbcOperation {
      * @return 原生ResultSet数据集合
      * @throws SQLException
      */
-    public abstract ResultSet queryForResultSet(String sql, Object[] params) throws SQLException;
+    ResultSet queryForResultSet(String sql, Object[] params) throws SQLException;
 
     /**
      * select功能
@@ -62,7 +71,7 @@ public interface JdbcOperation {
      * @return 原生ResultSet数据集合
      * @throws SQLException
      */
-    public abstract ResultSet queryForResultSet(String sql) throws SQLException;
+    ResultSet queryForResultSet(String sql) throws SQLException;
 
     /**
      * select功能
@@ -71,7 +80,7 @@ public interface JdbcOperation {
      * @return 统计单列记录数
      * @throws SQLException
      */
-    public abstract int queryForInt(String sql, Object[] params) throws SQLException;
+    int queryForInt(String sql, Object[] params) throws SQLException;
 
     /**
      * select功能
@@ -80,7 +89,7 @@ public interface JdbcOperation {
      * @return 统计单列记录数
      * @throws SQLException
      */
-    public abstract int queryForInt(String sql) throws SQLException;
+    int queryForInt(String sql) throws SQLException;
 
     /**
      * select功能
@@ -89,7 +98,7 @@ public interface JdbcOperation {
      * @return 返回sql执行结果
      * @throws SQLException
      */
-    public abstract String queryForString(String sql, Object[] params) throws SQLException;
+    String queryForString(String sql, Object[] params) throws SQLException;
 
     /**
      * select功能
@@ -98,26 +107,7 @@ public interface JdbcOperation {
      * @return 返回sql执行结果
      * @throws SQLException
      */
-    public abstract String queryForString(String sql) throws SQLException;
-
-    /**
-     * select功能
-     *
-     * @param sql
-     * @param params
-     * @return List<?>数据集合
-     * @throws SQLException
-     */
-    public abstract List<?> queryForBean(String sql, Object[] params, RowMapper<?> mapper) throws SQLException;
-
-    /**
-     * select功能
-     *
-     * @param sql
-     * @return List<?>数据集合
-     * @throws SQLException
-     */
-    public abstract List<?> queryForBean(String sql, RowMapper<?> mapper) throws SQLException;
+    String queryForString(String sql) throws SQLException;
 
     /**
      * select功能
@@ -141,6 +131,52 @@ public interface JdbcOperation {
     List<?> queryForEntity(String sql, Class<?> clazz) throws SQLException;
 
     /**
+     * select功能:分页查询(查询页数越大，性能越差)
+     *
+     * @param sql
+     * @param params
+     * @param curPage 当前页
+     * @param pageSize 每页记录数
+     * @param clazz
+     * @return List<?>数据集合
+     * @throws SQLException
+     */
+    List<?> queryForEntityPage(String sql, Object[] params, int curPage, int pageSize, Class<?> clazz) throws SQLException;
+
+    /**
+     * select功能:分页查询(查询页数越大，性能越差)
+     *
+     * @param sql
+     * @param curPage 当前页
+     * @param pageSize 每页记录数
+     * @param clazz
+     * @return List<?>数据集合
+     * @throws SQLException
+     */
+    List<?> queryForEntityPage(String sql, int curPage, int pageSize, Class<?> clazz) throws SQLException;
+
+    /**
+     * select功能
+     *
+     * @param sql
+     * @param params
+     * @param mapper 自定义mapper
+     * @return List<?>数据集合
+     * @throws SQLException
+     */
+    List<?> queryForMapper(String sql, Object[] params, RowMapper<?> mapper) throws SQLException;
+
+    /**
+     * select功能
+     *
+     * @param sql
+     * @param mapper 自定义mapper
+     * @return List<?>数据集合
+     * @throws SQLException
+     */
+    List<?> queryForMapper(String sql, RowMapper<?> mapper) throws SQLException;
+
+    /**
      * select功能
      *
      * @param sql
@@ -148,7 +184,7 @@ public interface JdbcOperation {
      * @return List<Map<String, Object>>数据集合
      * @throws SQLException
      */
-    public abstract List<Map<String, Object>> queryForMap(String sql, Object[] params) throws SQLException;
+    List<Map<String, Object>> queryForMap(String sql, Object[] params) throws SQLException;
 
     /**
      * select功能
@@ -157,56 +193,6 @@ public interface JdbcOperation {
      * @return List<Map<String, Object>>数据集合
      * @throws SQLException
      */
-    public abstract List<Map<String, Object>> queryForMap(String sql) throws SQLException;
-
-    /**
-     * 释放Connection资源
-     *
-     * @param x
-     */
-    public abstract void free(Connection x);
-
-    /**
-     * 释放Statement资源
-     *
-     * @param x
-     */
-    public abstract void free(Statement x);
-
-    /**
-     * 释放PreparedStatement资源
-     *
-     * @param x
-     */
-    public abstract void free(PreparedStatement x);
-
-    /**
-     * 释放ResultSet资源
-     *
-     * @param x
-     */
-    public abstract void free(ResultSet x);
-
-    /**
-     * 设置数据源
-     *
-     * @param dataSource
-     */
-    public abstract void setDataSource(DataSource dataSource);
-
-    /**
-     * 获取数据库链接
-     *
-     * @return Connection
-     */
-    public abstract Connection getConnection();
-
-    /**
-     * 获取数据库链接
-     *
-     * @param autoCommit
-     * @return Connection
-     */
-    public Connection getConnection(boolean autoCommit);
+    List<Map<String, Object>> queryForMap(String sql) throws SQLException;
 
 }
